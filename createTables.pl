@@ -12,10 +12,9 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 		RaiseError => 0}
 		);
 
-$dbh->do("drop database $database");
+$dbh->do("use $database");
 
-print 1 == $dbh->do("create database $database") ? "Successfully Created DB '$database'\n":
-	"Failed to Create DB '$database'\n";
+$dbh->do("create table TABLENAME values ()");
 
 $dbh->disconnect();
 exit;
