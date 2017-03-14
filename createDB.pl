@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+# Nathalie Tate
+# This code is freely available to be modified or distributed under the MIT 
+#	License. See LICENSE.txt
 
 use DBI;
 
