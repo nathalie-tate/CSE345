@@ -8,9 +8,9 @@ use DBI;
 $database='MooCow';
 
 my $dbh = DBI->connect("dbi:mysql:", "root",""
-		, {PrintError => 0,
-		RaiseError => 0}
-		);
+	, {PrintError => 0,
+	RaiseError => 0}
+	);
 
 $dbh->do("drop database $database");
 
