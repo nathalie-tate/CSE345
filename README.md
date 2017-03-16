@@ -1,22 +1,25 @@
-#CSE 345 Project
+# CSE 345 Project
 
-##Todo:
+## Todo:
 diagrams/design
 
 client  (java, javascript?)
 
 server  (perl)
 
-##Dependencies:
+## Dependencies:
 perl
+
 perl-dbi
+
 perl-dbd-mysql
+
 mysql/mariadb
 
-#createDB.pl
+# createDB.pl
 This script will create the database. If the database already exists, it will 
 delete it first.
 
-#createTables.pl
+# createTables.pl
 This script will create the tables in the database. createDB.pl **MUST** be run
 first
