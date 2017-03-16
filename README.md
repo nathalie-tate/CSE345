@@ -20,6 +20,8 @@ mysql/mariadb
 This script will create the database. If the database already exists, it will 
 delete it first.
 
+MySQL server **MUST** be running.
+
 # createTables.pl
 This script will create the tables in the database. createDB.pl **MUST** be run
 first
