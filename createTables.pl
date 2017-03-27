@@ -5,6 +5,8 @@
 #
 # createDB.pl MUST be run before this file.
 
+print("Creating Tables...");
+
 use DBI;
 
 $database='MooCow';
@@ -17,9 +19,9 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 
 $dbh->do("use $database;");
 
-$dbh->do("create table Customer(fName varchar(20), lName varchar(20), initial
-	char, address varchar(30), accountNum integer, customerID integer
-	auto_increment primary key);");
+$dbh->do("create table Customer(customerID integer auto_increment primary key, 
+	fName varchar(20), initial char, lName varchar(20), address varchar(30),
+	accountNum integer);");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
 	customerID integer, trackingNum integer, hazardous boolean, 
@@ -61,4 +63,7 @@ $dbh->do("alter table Pricing add foreign key(pkgNum) references Package(pkgID)
 	on update cascade on delete cascade;");
 
 $dbh->disconnect();
+
+print("Done\n");
+
 exit;

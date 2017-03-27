@@ -19,10 +19,10 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 
 print("Loading Lists...");
 
-open FIRSTNAME,"<","data/CSV_Database_of_First_Names.csv" or die;
-open LASTNAME, "<","data/CSV_Database_of_Last_Names.csv"  or die;
-open NOUNLIST, "<","data/nounlist.csv"										or die;
-open STATES, 	 "<","data/states.csv"											or die;
+open FIRSTNAME,"<","data/firstNames.csv" or die;
+open LASTNAME, "<","data/lastNames.csv"  or die;
+open NOUNLIST, "<","data/nounlist.csv"	 or die;
+open STATES, 	 "<","data/states.csv"		 or die;
 
 @firstNames = <FIRSTNAME>;
 @lastNames  = <LASTNAME>;
@@ -33,7 +33,7 @@ open STATES, 	 "<","data/states.csv"											or die;
 @addresses = ('1'..'999999');
 @stSuffix = ("St", "Ave", "Ln", "Ct", "Blvd", "Rd");
 @citySuffix = ("City", "Town", "Village", "Township", "Municipality", 
-		"Borough", "Parish"," ");
+		"Borough", "Parish","");
 @states = <STATES>;
 
 close FIRSTNAME;
@@ -50,27 +50,29 @@ sub trim
 
 sub randomFirstName
 {
-	return trim($firstNames[int(rand(@firstNames))]);
+	return '"'.trim($firstNames[int(rand(@firstNames))]).'"';
 }
 sub randomLastName
 {
-	return trim($lastNames[int(rand(@lastNames))]); 
+	return '"'.trim($lastNames[int(rand(@lastNames))]).'"'; 
 }
 sub randomMI
 {
-	return $middleInitials[int(rand(27))];
+	return '"'.$middleInitials[int(rand(27))].'"';
 }
 sub randomAddress
 {
 	$num = $addresses[int(rand(@addresses))];
-	$street = trim($nounlist[int(rand(@nounlist))]);
+	$street = trim($nouns[int(rand(@nouns))]);
 	$streetSuffix = $stSuffix[int(rand(6))];
 	$citySuffix = $citySuffix[int(rand(8))];
 	$zip = $zips[int(rand(@zips))];
 	$state = $states[int(rand(50))];
+	$city = trim($nouns[int(rand(@nouns))]);
 
-	return $num.' '.$street.' '.$streetSuffix.', '.$city.' '.$citySuffix.', '.
-		$state.' '.$zip;
+	my $tmp = '"'.$num.' '.$street.' '.$streetSuffix.', '.$city.' '.$citySuffix.', '.
+		$state.' '.$zip.'"';
+	return $tmp;
 }
 sub accountNumber
 {
@@ -82,10 +84,10 @@ print("Populating...");
 
 ## "main" 
 $dbh->do("use $database;");
-for $i (0..10)
+for $i (0..100)
 {
-	$dbh->do('insert into Customer(fName, lName, initial, address)
-			values('.randomFirstname.','.randomLastName.','.randomMI.','.randomAddress
+	$dbh->do('insert into Customer(fName, initial, lName, address)
+			values('.randomFirstName.','.randomMI.','.randomLastName.','.randomAddress
 			.');');
 }
 
