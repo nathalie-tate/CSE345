@@ -103,7 +103,7 @@ sub selectRandom
 
 	while (my @row = $preparedStatement->fetchrow_array())
 	{
-		push my @contents $row[0];
+		push my @contents,$row[0];
 	}
 
 	return $contents[int(rand(@contents))]; 
@@ -120,18 +120,18 @@ sub weightedAB
 
 	while($Anum > 0)
 	{
-		push my @AB $A;
+		push my @AB,$A;
 	}
 	while($Bnum > 0)
 	{
-		push my @AB $B;
+		push my @AB,$B;
 	}
 	return $AB[int(rand(@AB))];
 }
 
 sub dueDate
 {
-	my ($_,$_,$_,$day,$month,$yr19,@_) = localtime(time);
+	($_,$_,$_,my $day,my $month,my $year,@_) = localtime(time);
 	$month = $monthLookUp[$month];
 	$year += 1900;
 	if ($month > 12)
@@ -142,7 +142,7 @@ sub dueDate
 
 	$day = $day>28?28:$day;
 
-	return $year.'-'.$month.'-'$day;
+	return $year.'-'.$month.'-'.$day;
 
 }
 
