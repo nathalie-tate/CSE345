@@ -30,9 +30,9 @@ $dbh->do("create table Package(pkgID integer auto_increment primary key,
 $dbh->do("create table Tracking(date date, pkgID integer,
 	timeToArrival varchar(15), currentLocation varchar(20));");
 
-$dbh->do("create table Invoice(invoiceNum integer, accountNum 
-	integer, amntDue float, payment float, date date, dueDate date,
-	creditOrShipping enum('credit', 'shipping account'));");
+$dbh->do("create table Invoice(invoiceNum integer primary key auto_increment, 
+	accountNum integer, customerID integer, amntDue float, payment float, date 
+	date, dueDate date, creditOrShipping enum('credit', 'shipping account'));");
 
 $dbh->do("create table CustomsManifest(customsID integer primary key, contents
 	varchar(30), value float);");
@@ -46,11 +46,8 @@ $dbh->do("alter table Tracking add primary key(pkgID, date);");
 $dbh->do("alter table Tracking add foreign key(pkgID) references
 	Package(pkgID);");
 
-$dbh->do("alter table Invoice add primary key(invoiceNum, accountNum);");
-$dbh->do("alter table Invoice alter invoiceNum integer auto_increment;");
-
-$dbh->do("alter table Customer add foreign key(accountNum) references
-	Invoice(accountNum);");
+$dbh->do("alter table Invoice add foreign key (customerID) references
+	Customer(customerID) on update cascade on delete cascade;");
 
 $dbh->do("alter table Package add foreign key (customerID) references 
 	Customer(customerID) on delete cascade;"); 

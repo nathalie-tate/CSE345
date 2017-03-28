@@ -190,9 +190,10 @@ for (0..200)
 {
 	my $due = int(rand(10000));
 	my $paid = int(rand($due));
-	$dbh->do('insert into Invoice(accountNum, amntDue, payment, date, dueDate,
-		creditOrShipping) values ('.randAccountNumber.','.$due.','.$paid.', now(),
-		'.dueDate.','.weightedAB('credit','shipping',1,1).');');
+	$dbh->do('insert into Invoice(accountNum, customerID, amntDue, payment, date, 
+		dueDate, creditOrShipping) values('.randAccountNumber.','.selectRandom
+		('Customer','customerID').','.$due.','.$paid.
+		', now(),'.dueDate.','.weightedAB('credit','shipping',1,1).');');
 }
 
 
