@@ -24,14 +24,14 @@ $dbh->do("create table Customer(customerID integer auto_increment primary key,
 	accountNum integer);");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
-	customerID integer, trackingNum integer, hazardous boolean, 
-	customsID integer, destination varchar(30));");
+	customerID integer, hazardous boolean, customsID integer, 
+	destination varchar(30));");
 
-$dbh->do("create table Tracking(date date, trackingNum integer,
+$dbh->do("create table Tracking(date date, pkgID integer,
 	timeToArrival varchar(15), currentLocation varchar(20));");
 
 $dbh->do("create table Invoice(invoiceNum integer, accountNum 
-	integer primary key, amntDue float, payment float, date date, dueDate date,
+	integer, amntDue float, payment float, date date, dueDate date,
 	creditOrShipping enum('credit', 'shipping account'));");
 
 $dbh->do("create table CustomsManifest(customsID integer primary key, contents
@@ -42,23 +42,23 @@ $dbh->do("create table Pricing(customerID integer, pkgNum integer, price
 
 ### Add constraints
 
-$dbh->do("alter table Tracking add primary key(trackingNum, date);");
+$dbh->do("alter table Tracking add primary key(pkgID, date);");
+$dbh->do("alter table Tracking add foreign key(pkgID) references
+	Package(pkgID);");
+
+$dbh->do("alter table Invoice add primary key(invoiceNum, accountNum);");
+$dbh->do("alter table Invoice alter invoiceNum integer auto_increment;");
 
 $dbh->do("alter table Customer add foreign key(accountNum) references
 	Invoice(accountNum);");
 
 $dbh->do("alter table Package add foreign key (customerID) references 
-	Customer(customerID) on delete cascade;");
-
-$dbh->do("alter table Package add foreign key (trackingNum) references
-	Tracking(trackingNum) on update cascade on delete cascade;");
-
+	Customer(customerID) on delete cascade;"); 
 $dbh->do("alter table Package add foreign key (customsID) references
 	CustomsManifest(customsID) on update cascade on delete cascade;");
 
 $dbh->do("alter table Pricing add foreign key(customerID) references
-	Customer(customerID) on update cascade on delete cascade;");
-
+	Customer(customerID) on update cascade on delete cascade;"); 
 $dbh->do("alter table Pricing add foreign key(pkgNum) references Package(pkgID) 
 	on update cascade on delete cascade;");
 
