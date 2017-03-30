@@ -5,7 +5,7 @@
 #
 # createDB.pl MUST be run before this file.
 
-print("Creating Tables...");
+print("Creating Tables...\n");
 
 use DBI;
 
@@ -20,15 +20,15 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 $dbh->do("use $database;");
 
 $dbh->do("create table Customer(customerID integer auto_increment primary key, 
-	fName varchar(20), initial char, lName varchar(20), address varchar(30),
+	fName varchar(20), initial char, lName varchar(20), address varchar(256),
 	accountNum integer);");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
-	customerID integer, hazardous boolean, customsID integer, 
-	destination varchar(30));");
+	customerID integer, hazardous integer(1), customsID integer, 
+	destination varchar(256));");
 
 $dbh->do("create table Tracking(date date, pkgID integer,
-	timeToArrival varchar(15), currentLocation varchar(20));");
+	timeToArrival varchar(15), currentLocation varchar(256));");
 
 $dbh->do("create table Invoice(invoiceNum integer primary key auto_increment, 
 	accountNum integer, customerID integer, amntDue float, payment float, date 

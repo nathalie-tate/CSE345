@@ -17,7 +17,7 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 
 ### populate the tables
 
-print("Loading Lists...");
+print("Loading Lists...\n");
 
 open FIRSTNAME,"<","data/firstNames.csv" or die;
 open LASTNAME, "<","data/lastNames.csv"  or die;
@@ -62,28 +62,29 @@ sub trim
 
 sub randomFirstName
 {
-	return '"'.trim($firstNames[int(rand(@firstNames))]).'"';
+	return trim($firstNames[int(rand(@firstNames))]);
 }
 sub randomLastName
 {
-	return '"'.trim($lastNames[int(rand(@lastNames))]).'"'; 
+	return trim($lastNames[int(rand(@lastNames))]); 
 }
 sub randomMI
 {
-	return '"'.$middleInitials[int(rand(27))].'"';
+	return $middleInitials[int(rand(27))];
 }
 sub randomAddress
 {
 	$num = $addresses[int(rand(@addresses))];
 	$street = trim($nouns[int(rand(@nouns))]);
+	$city = trim($nouns[int(rand(@nouns))]);
 	$streetSuffix = $stSuffix[int(rand(6))];
 	$citySuffix = $citySuffix[int(rand(8))];
 	$zip = $zips[int(rand(@zips))];
-	$state = $states[int(rand(50))];
-	$city = trim($nouns[int(rand(@nouns))]);
+	$state = trim($states[int(rand(50))]);
 
-	my $tmp = '"'.$num.' '.$street.' '.$streetSuffix.', '.$city.' '.$citySuffix.
-		', '.$state.' '.$zip.'"';
+	my $tmp = "$num $street $streetSuffix / ";
+		$tmp = $tmp.trim("$city $citySuffix"); 
+		$tmp = $tmp.", $state $zip";
 	return $tmp;
 }
 sub randAccountNumber
@@ -97,16 +98,12 @@ sub selectRandom
 	my $table = shift;
 	my $var = shift;
 
-	my $statement = "SELECT ".$var." FROM ".$table;
+	my $statement = "SELECT $var FROM $table order by rand() limit 1";
 	my $preparedStatement  = $dbh->prepare($statement);
 	$preparedStatement->execute();
 
-	while (my @row = $preparedStatement->fetchrow_array())
-	{
-		push my @contents,$row[0];
-	}
-
-	return $contents[int(rand(@contents))]; 
+	my @tmp = $preparedStatement->fetchrow_array();
+	return $tmp[0];
 }
 
 #returns A or B at the given ratio
@@ -118,13 +115,17 @@ sub weightedAB
 	my $Anum = shift;
 	my $Bnum = shift;
 
+	my @AB;
+
 	while($Anum > 0)
 	{
-		push my @AB,$A;
+		push @AB,$A;
+		$Anum--;
 	}
 	while($Bnum > 0)
 	{
-		push my @AB,$B;
+		push @AB,$B;
+		$Bnum--;
 	}
 	return $AB[int(rand(@AB))];
 }
@@ -153,48 +154,68 @@ sub timeToArrival
 }
 
 print("Done\n");
-print("Populating...");
+print("Populating...\n");
 
 ## "main" 
 $dbh->do("use $database;");
 
 #populate non-fk attributes in Customer
+print("  Customer...\n");
 for (0..100)
 {
-	$dbh->do('insert into Customer(fName, initial, lName, address)
-		values('.randomFirstName.','.randomMI.','.randomLastName.','.randomAddress
-		.');');
+	my $fName = randomFirstName;
+	my $mi = trim(randomMI);
+	my $lName = randomLastName;
+	my $address = randomAddress;
+
+	$dbh->do("insert into Customer(fName, initial, lName, address) values (
+		'$fName','$mi','$lName','$address');");
 }
+print("  Done");
 
 #populate non-fk attributes in Package
 #and customerID
+print("\n  Package...\n");
 for (0..200)
 {
-	$dbh->do('insert into Package(customerID, hazardous, destination)
-		values ('.selectRandom("Customer","customerID").','.weightedAB('yes','no'
-		,1,9).','.randomAddress.');');
+	my $selectRandom = selectRandom("Customer","customerID");
+	my $weightedAB = weightedAB(1,0,5,9);
+	my $randomAddress = randomAddress;
+
+	$dbh->do("insert into Package(customerID, hazardous, destination) values
+			($selectRandom,$weightedAB,'$randomAddress');");
 }
+print("  Done\n");
 
 #populate attributes in Tracking
+print("  Tracking...\n");
 for (0..150)
 {
-	$dbh->do('insert into Tracking(date, pkgID, timeToArrival, currentLocation) 
-		values(now(),'.selectRandom(Package, pkgID).','
-		.timeToArrival.','
-		.randomAddress ### TODO ### change to just city/state/country
-		.');');
+	my $selectRandom = selectRandom("Package","pkgID");
+	my $timeToArrival = timeToArrival;
+	my $randomAddress = randomAddress;
+
+	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, currentLocation) 
+		values(now(),'$selectRandom', '$timeToArrival', '$randomAddress');");
 }
+print("  Done\n");
 
 #populate Invoice
+print("  Invoice...\n");
 for (0..200)
 {
 	my $due = int(rand(10000));
 	my $paid = int(rand($due));
-	$dbh->do('insert into Invoice(accountNum, customerID, amntDue, payment, date, 
-		dueDate, creditOrShipping) values('.randAccountNumber.','.selectRandom
-		('Customer','customerID').','.$due.','.$paid.
-		', now(),'.dueDate.','.weightedAB('credit','shipping',1,1).');');
+	my $randAccountNumber = randAccountNumber;
+	my $selectRandom = selectRandom("Customer","customerID");
+	my $dueDate = dueDate;
+	my $weightedAB = weightedAB("credit",'shipping account',1,1);
+
+	$dbh->do("insert into Invoice(accountNum, customerID, amntDue, payment, date, 
+		dueDate, creditOrShipping) values('$randAccountNumber','$selectRandom',$due,$paid, now(),
+		'$dueDate','$weightedAB');");
 }
+print("  Done\n");
 
 
 print("Done\n");
