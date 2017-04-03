@@ -25,3 +25,7 @@ MySQL server **MUST** be running.
 # createTables.pl
 This script will create the tables in the database. createDB.pl **MUST** be run
 first
+
+# populateTables.pl
+This script will populate the tables in the database. createTables.pl **MUST**
+be run first
