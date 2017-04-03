@@ -45,15 +45,15 @@ $dbh->do("alter table Tracking add primary key(pkgID, date);");
 $dbh->do("alter table Tracking add foreign key(pkgID) references
 	Package(pkgID);");
 
-$dbh->do("alter table Invoice add foreign key (customerID) references
-	Customer(customerID) on update cascade on delete cascade;");
-$dbh->do("alter table Invoice add foreign key (pkgID) references
-	Package(pkgID) on update cascade on delete cascade;");
-
 $dbh->do("alter table Package add foreign key (customerID) references 
 	Customer(customerID) on delete cascade;"); 
 $dbh->do("alter table Package add foreign key (customsID) references
 	CustomsManifest(customsID) on update cascade on delete cascade;");
+
+#$dbh->do("alter table Invoice add foreign key (customerID) references
+#	Customer(customerID) on update cascade on delete cascade;");
+#$dbh->do("alter table Invoice add foreign key (pkgID) references
+#Package(pkgID);");
 
 $dbh->disconnect();
 

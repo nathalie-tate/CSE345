@@ -222,7 +222,7 @@ for $i (0..200)
 {
 	if (!(selectWhere("Package","destination","pkgID",$i) =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|HI|AL) \S+/))
 	{
-		my $contents = $nouns[int(rand(@nouns))];
+		my $contents = trim($nouns[int(rand(@nouns))]);
 		my $value = int(rand(100000));
 
 		$dbh->do("insert into CustomsManifest(contents,value) values(\"$contents\",
