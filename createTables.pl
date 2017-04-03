@@ -24,21 +24,20 @@ $dbh->do("create table Customer(customerID integer auto_increment primary key,
 	accountNum integer);");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
-	customerID integer, hazardous integer(1), customsID integer, 
+	customerID integer, hazardous integer(1), weight integer,
+	customsID integer, shipping enum('overnight','express','standard','free'),
 	destination varchar(256));");
 
 $dbh->do("create table Tracking(date date, pkgID integer,
 	timeToArrival varchar(15), currentLocation varchar(256));");
 
-$dbh->do("create table Invoice(invoiceNum integer primary key auto_increment, 
+$dbh->do("create table Invoice(pkgID integer, 
 	accountNum integer, customerID integer, amntDue float, payment float, date 
 	date, dueDate date, creditOrShipping enum('credit', 'shipping account'));");
 
-$dbh->do("create table CustomsManifest(customsID integer primary key, contents
-	varchar(30), value float);");
+$dbh->do("create table CustomsManifest(customsID integer primary key
+	auto_increment, contents varchar(30), value float);");
 
-$dbh->do("create table Pricing(customerID integer, pkgNum integer, price
-	float);");
 
 ### Add constraints
 
@@ -48,16 +47,13 @@ $dbh->do("alter table Tracking add foreign key(pkgID) references
 
 $dbh->do("alter table Invoice add foreign key (customerID) references
 	Customer(customerID) on update cascade on delete cascade;");
+$dbh->do("alter table Invoice add foreign key (pkgID) references
+	Package(pkgID) on update cascade on delete cascade;");
 
 $dbh->do("alter table Package add foreign key (customerID) references 
 	Customer(customerID) on delete cascade;"); 
 $dbh->do("alter table Package add foreign key (customsID) references
 	CustomsManifest(customsID) on update cascade on delete cascade;");
-
-$dbh->do("alter table Pricing add foreign key(customerID) references
-	Customer(customerID) on update cascade on delete cascade;"); 
-$dbh->do("alter table Pricing add foreign key(pkgNum) references Package(pkgID) 
-	on update cascade on delete cascade;");
 
 $dbh->disconnect();
 

@@ -8,14 +8,18 @@ Bills are always due on or before the 28th of the month they are due
 
 All packages ship from a large central warehouse located in Kansas
 
-Shipping rate and time to arrival are linear functions of the distance between
-the warehouse and the destination
+Time to arrival is a linear function of the distance between the warehouse and
+the destination.
+
+Different shipping rates have different linear functions
 
 Distance between the warehouse and the destination are determined based on the 
-distance between the center of the state of Kansas and the center of the 
-destination state. Deliveries within Kansas are said to have a distance of 0.
+distance between the state of Kansas and the destination state. Deliveries
+within Kansas are said to have a distance of 0.
 
 Distances for international deliveries are determined based on the distance 
-between the center of Kansas and the center of the destination country.
+between Kansas and the destination country.
 
-International deliveries have and additional charge.
+Domestic deliveries have flat shipping rates.
+
+International, oversize, and hazardous deliveries have additional charges.

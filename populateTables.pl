@@ -35,18 +35,9 @@ open STATES, 	 "<","data/states.csv"		 or die;
 @citySuffix = ("City", "Town", "Village", "Township", "Municipality", 
 	"Borough", "Parish","");
 @states = <STATES>;
-%monthLookUp = ('Jan' => 1,
-								'Feb' => 2,
-								'Mar' => 3,
-								'Apr' => 4,
-								'May' => 5,
-								'Jun' => 6,
-								'Jul' => 7,
-								'Aug' => 8,
-								'Sep' => 9,
-								'Oct' => 10,
-								'Nov' => 11,
-								'Dec' => 12);
+%domesticShippingRate = ('overnight' => 25, 'express' => 15, 'standard' => 5,
+		'free' => 0);
+%extraFees = ('hazmat' => 100, 'oversize' => 25, 'international' => 10);
 
 close FIRSTNAME;
 close LASTNAME;
@@ -83,9 +74,9 @@ sub randomAddress
 	$state = trim($states[int(rand(50))]);
 
 	my $tmp = "$num $street $streetSuffix / ";
-		$tmp = $tmp.trim("$city $citySuffix"); 
-		$tmp = $tmp.", $state $zip";
-	return $tmp;
+	$tmp = $tmp.trim("$city $citySuffix"); 
+	$tmp = $tmp.", $state $zip";
+	return $tmp; 
 }
 sub randAccountNumber
 {
@@ -99,6 +90,20 @@ sub selectRandom
 	my $var = shift;
 
 	my $statement = "SELECT $var FROM $table order by rand() limit 1";
+	my $preparedStatement  = $dbh->prepare($statement);
+	$preparedStatement->execute();
+
+	my @tmp = $preparedStatement->fetchrow_array();
+	return $tmp[0];
+}
+sub selectWhere
+{
+	my $table = shift;
+	my $col = shift;
+	my $var = shift;
+	my $val = shift;
+
+	my $statement = "SELECT $col FROM $table where $var = \"$val\"";
 	my $preparedStatement  = $dbh->prepare($statement);
 	$preparedStatement->execute();
 
@@ -133,7 +138,6 @@ sub weightedAB
 sub dueDate
 {
 	($_,$_,$_,my $day,my $month,my $year,@_) = localtime(time);
-	$month = $monthLookUp[$month];
 	$year += 1900;
 	if ($month > 12)
 	{
@@ -168,8 +172,8 @@ for (0..100)
 	my $lName = randomLastName;
 	my $address = randomAddress;
 
-	$dbh->do("insert into Customer(fName, initial, lName, address) values (
-		'$fName','$mi','$lName','$address');");
+	$dbh->do("insert into Customer(fName, initial, lName, address) 
+		values ('$fName','$mi','$lName',\"$address\");");
 }
 print("  Done");
 
@@ -179,11 +183,23 @@ print("\n  Package...\n");
 for (0..200)
 {
 	my $selectRandom = selectRandom("Customer","customerID");
-	my $weightedAB = weightedAB(1,0,5,9);
+	my $hazmat = weightedAB(1,0,1,9);
 	my $randomAddress = randomAddress;
+	my $weight = int(rand(1000));
 
-	$dbh->do("insert into Package(customerID, hazardous, destination) values
-			($selectRandom,$weightedAB,'$randomAddress');");
+	if($randomAddress =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY) \S+/)
+	{
+		my @shipping = ("overnight", "express", "regular", "free");
+	}
+	else
+	{
+		my @shipping = ("express", "regular", "free"); 
+	}
+
+	my $shipping_ = $shipping[int(rand(@shipping))];
+
+	$dbh->do("insert into Package(customerID, hazardous, weight, shipping,
+		destination) values ($selectRandom,$hazmat,$weight,\"$shipping_\",\"$randomAddress\");");
 }
 print("  Done\n");
 
@@ -195,28 +211,56 @@ for (0..150)
 	my $timeToArrival = timeToArrival;
 	my $randomAddress = randomAddress;
 
-	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, currentLocation) 
+	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, currentLocation)
 		values(now(),'$selectRandom', '$timeToArrival', '$randomAddress');");
 }
 print("  Done\n");
 
+#populate CustomsManifest
+print("  CustomsManifest...\n");
+for $i (0..200)
+{
+	if (!(selectWhere("Package","destination","pkgID",$i) =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|HI|AL) \S+/))
+	{
+		my $contents = $nouns[int(rand(@nouns))];
+		my $value = int(rand(100000));
+
+		$dbh->do("insert into CustomsManifest(contents,value) values(\"$contents\",
+			$value);"); 
+		my $customsID = selectWhere('CustomsManifest','customsID','contents',$contents);
+		$dbh->do("update Package set customsID = $customsID where pkgID = $i;"); 
+	}
+}
+
+
 #populate Invoice
 print("  Invoice...\n");
-for (0..200)
+for $i(0..200)
 {
-	my $due = int(rand(10000));
+	my $shipping = selectWhere('Package','shipping','pkgID',$i);
+	my $international = selectWhere('Package','customsID','pkgID',$i);
+	my $oversize = 100 < selectWhere('Package','weight','pkgID',$i);
+	my $hazmat = selectWhere('Package','hazardous','pkgID',$i);
+
+	$international = $international>0?"international":0;
+	$oversize = $oversize>0?"oversize":0;
+	$hazmat = $hazmat!=0?"hazmat":0;
+
+	my $due = $domesticShippingRate[$shiping] + $extraFees[$international] +
+		$extraFees[$oversize] + $extraFees[$hazmat];
+
 	my $paid = int(rand($due));
 	my $randAccountNumber = randAccountNumber;
 	my $selectRandom = selectRandom("Customer","customerID");
 	my $dueDate = dueDate;
 	my $weightedAB = weightedAB("credit",'shipping account',1,1);
 
-	$dbh->do("insert into Invoice(accountNum, customerID, amntDue, payment, date, 
-		dueDate, creditOrShipping) values('$randAccountNumber','$selectRandom',$due,$paid, now(),
-		'$dueDate','$weightedAB');");
+	$dbh->do("insert into Invoice(pkgID, accountNum, customerID, amntDue,
+		payment, date, dueDate, creditOrShipping)
+		values($i,$randAccountNumber,$selectRandom,$due,
+		$paid,now(),\"$dueDate\",\"$weightedAB\");");
 }
 print("  Done\n");
-
 
 print("Done\n");
 $dbh->disconnect();
