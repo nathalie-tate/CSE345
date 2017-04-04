@@ -2,24 +2,27 @@ Not all packages have tracking
 
 Packages do not have tracking numbers; They are tracked by their package number
 
-Payment is due within six (6) months of the date the invoice is issued
+Payment is due within five (5) months of the date the invoice is issued
 
 Bills are always due on or before the 28th of the month they are due
 
-All packages ship from a large central warehouse located in Kansas
-
-Time to arrival is a linear function of the distance between the warehouse and
+Time to arrival is a linear function of the distance between the source and
 the destination.
 
 Different shipping rates have different linear functions
 
-Distance between the warehouse and the destination are determined based on the 
-distance between the state of Kansas and the destination state. Deliveries
-within Kansas are said to have a distance of 0.
+Distance between the source and the destination are determined based on the 
+distance between the state the source is in and the destination state.
+
+Deliveries within one state are said to have a distance of 0.
 
 Distances for international deliveries are determined based on the distance 
-between Kansas and the destination country.
+between the state of origin and the destination country, or vice versa
 
-Domestic deliveries have flat shipping rates.
+Domestic deliveries have flat shipping rates regardless of the distance.
 
 International, oversize, and hazardous deliveries have additional charges.
+
+Shipping may be Express, Standard, or Overnight.
+
+Only deliveries within the Continental US may be Overnight.
