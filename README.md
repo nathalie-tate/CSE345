@@ -10,9 +10,12 @@ server  (perl)
 ## Dependencies:
 perl
 
-perl-dbi
+CPAN Packages:
+-DBI
 
-perl-dbd-mysql
+-DBI::MySQL
+
+-Math::Random
 
 mysql/mariadb
 

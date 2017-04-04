@@ -2,6 +2,7 @@
 # Nathalie Tate This code is freely available to be modified or distributed under the MIT License. See LICENSE.txt This file MUST be run after createTables.pl 
 
 use DBI; 
+use Math::Random;
 $database='MooCow'; 
 my $dbh = DBI->connect("dbi:mysql:", "root","" 
 	## debug 
@@ -20,7 +21,6 @@ open STATES, 	 "<","data/states.csv"		 or die;
 @lastNames  = <LASTNAME>;
 @nouns			= <NOUNLIST>;
 @middleInitials = ('A'..'Z',' ');
-@accounts = (00000..99999);
 @zips = ('11111'..'99999');
 @addresses = ('1'..'999999');
 @stSuffix = ("St", "Ave", "Ln", "Ct", "Blvd", "Rd");
@@ -71,9 +71,9 @@ sub randomAddress
 }
 sub randAccountNumber
 {
-	my $a = $accounts[int(rand(@accounts))];
-	my $b = $accounts[int(rand(@accounts))];
-	return $a.$b;
+	my $a = random_uniform_integer($_,1000,9999);
+	my $b = random_uniform_integer($_,1000,9999);
+	return "$a$b";
 }
 
 #subroutine for selecting random element from column. 
