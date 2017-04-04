@@ -1,26 +1,18 @@
-#!/usr/bin/perl
-# Nathalie Tate
-# This code is freely available to be modified or distributed under the MIT 
-#	License. See LICENSE.txt
-#
-# This file MUST be run after createTables.pl
+#!/usr/bin/perl 
+# Nathalie Tate This code is freely available to be modified or distributed under the MIT License. See LICENSE.txt This file MUST be run after createTables.pl 
 
-use DBI;
+use DBI; 
+$database='MooCow'; 
+my $dbh = DBI->connect("dbi:mysql:", "root","" 
+	## debug 
+	#, {PrintError => 0, 
+	#RaiseError => 0}
+); 
 
-$database='MooCow';
-
-my $dbh = DBI->connect("dbi:mysql:", "root",""
-## debug
-#, {PrintError => 0,
-#RaiseError => 0}
-	);
-
-### populate the tables
-
+### populate the tables 
 print("Loading Lists...\n");
-
-open FIRSTNAME,"<","data/firstNames.csv" or die;
-open LASTNAME, "<","data/lastNames.csv"  or die;
+open FIRSTNAME,"<","data/firstNames.csv" or die; 
+open LASTNAME, "<","data/lastNames.csv"  or die; 
 open NOUNLIST, "<","data/nounlist.csv"	 or die;
 open STATES, 	 "<","data/states.csv"		 or die;
 
@@ -28,7 +20,7 @@ open STATES, 	 "<","data/states.csv"		 or die;
 @lastNames  = <LASTNAME>;
 @nouns			= <NOUNLIST>;
 @middleInitials = ('A'..'Z',' ');
-@accounts = ('00000'..'99999');
+@accounts = (00000..99999);
 @zips = ('11111'..'99999');
 @addresses = ('1'..'999999');
 @stSuffix = ("St", "Ave", "Ln", "Ct", "Blvd", "Rd");
@@ -79,7 +71,9 @@ sub randomAddress
 }
 sub randAccountNumber
 {
-	return $accounts[int(rand(@accounts))].$accounts[int(rand(@accounts))];
+	my $a = $accounts[int(rand(@accounts))];
+	my $b = $accounts[int(rand(@accounts))];
+	return $a.$b;
 }
 
 #subroutine for selecting random element from column. 
