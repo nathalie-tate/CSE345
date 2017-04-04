@@ -29,3 +29,6 @@ first
 # populateTables.pl
 This script will populate the tables in the database. createTables.pl **MUST**
 be run first
+
+**_Important:_** This must be run _exactly_ once. Running this script multiple
+times will create database errors that will not be caught.
