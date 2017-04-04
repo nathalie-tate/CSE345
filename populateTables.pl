@@ -187,12 +187,12 @@ for (0..200)
 	my $randomAddress = randomAddress;
 	my $weight = int(rand(1000));
 
-	my @shipping = ("express", "regular"); 
+	my @shipping = ("express", "standard"); 
 
 	#TODO this needs to be 1) fixe and 2) updated when issue #2/#3 are fixed
 	if($randomAddress =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY) \S+/)
 	{
-		my @shipping = ("overnight", "express", "regular");
+		my @shipping = ("overnight", "express", "standard");
 	}
 
 	my $shipping1 = $shipping[int(rand(@shipping))];
