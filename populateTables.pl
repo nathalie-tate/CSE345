@@ -196,7 +196,8 @@ for (0..200)
 	}
 
 	my $shipping1 = $shipping[int(rand(@shipping))];
-	print "$shipping1\n";
+	#DEBUG
+	#print "$shipping1\n";
 
 	$dbh->do("insert into Package(customerID, hazardous, weight, shipping,
 		destination) values ($selectRandom,$hazmat,$weight,\"$shipping1\",
