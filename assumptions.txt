@@ -4,6 +4,10 @@ Packages do not have tracking numbers; They are tracked by their package number
 
 Payment is due within five (5) months of the date the invoice is issued
 
+Amount Due is the current account balance plus the cost of the current 
+transaction. Amount paid is not immediately subtracted. For example, amount due
+= $5 and amount paid = $5 means the balance is fully paid off.
+
 Bills are always due on or before the 28th of the month they are due
 
 Time to arrival is a linear function of the distance between the source and
