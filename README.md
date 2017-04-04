@@ -16,6 +16,10 @@ perl-dbd-mysql
 
 mysql/mariadb
 
+# runAll.sh
+It you're running Linux, this script will set up the entire database for you.
+You can run this once and forget about the rest of the scripts!  
+
 # createDB.pl
 This script will create the database. If the database already exists, it will 
 delete it first.
