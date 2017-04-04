@@ -35,9 +35,9 @@ open STATES, 	 "<","data/states.csv"		 or die;
 @citySuffix = ("City", "Town", "Village", "Township", "Municipality", 
 	"Borough", "Parish","");
 @states = <STATES>;
-%domesticShippingRate = ('overnight' => 25, 'express' => 15, 'standard' => 5,
-		'free' => 0);
-%extraFees = ('hazmat' => 100, 'oversize' => 25, 'international' => 10);
+%domesticShippingRate = ("overnight" => 25, "express" => 15, "standard" => 5,
+		"free" => 0);
+%extraFees = ("" => 0, "hazmat" => 100, "oversize" => 25, "international" => 10);
 
 close FIRSTNAME;
 close LASTNAME;
@@ -139,6 +139,7 @@ sub dueDate
 {
 	($_,$_,$_,my $day,my $month,my $year,@_) = localtime(time);
 	$year += 1900;
+	$month += 6;
 	if ($month > 12)
 	{
 		$year++;
@@ -199,7 +200,8 @@ for (0..200)
 	my $shipping_ = $shipping[int(rand(@shipping))];
 
 	$dbh->do("insert into Package(customerID, hazardous, weight, shipping,
-		destination) values ($selectRandom,$hazmat,$weight,\"$shipping_\",\"$randomAddress\");");
+		destination) values ($selectRandom,$hazmat,$weight,\"$shipping_\",
+		\"$randomAddress\");");
 }
 print("  Done\n");
 
@@ -239,12 +241,16 @@ for $i(0..200)
 {
 	my $shipping = selectWhere('Package','shipping','pkgID',$i);
 	my $international = selectWhere('Package','customsID','pkgID',$i);
-	my $oversize = 100 < selectWhere('Package','weight','pkgID',$i);
-	my $hazmat = selectWhere('Package','hazardous','pkgID',$i);
 
-	$international = $international>0?"international":0;
-	$oversize = $oversize>0?"oversize":0;
-	$hazmat = $hazmat!=0?"hazmat":0;
+	my $oversize = selectWhere('Package','weight','pkgID',$i);
+	$oversize = 100 < $oversize?"oversize":"";
+
+	my $hazmat = selectWhere('Package','hazardous','pkgID',$i);
+	$hazmat = defined $hazmat && $hazmat > 0? "hazmat" : "";
+
+	$international = defined $international?"international":"";
+	$oversize = $oversize>0?"oversize":"";
+	$hazmat = $hazmat!=0?"hazmat":"";
 
 	my $due = $domesticShippingRate[$shiping] + $extraFees[$international] +
 		$extraFees[$oversize] + $extraFees[$hazmat];
