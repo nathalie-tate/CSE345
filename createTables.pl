@@ -26,7 +26,7 @@ $dbh->do("create table Customer(customerID integer auto_increment primary key,
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
 	customerID integer, hazardous integer(1), weight integer,
 	customsID integer, shipping enum('overnight','express','standard','free'),
-	destination varchar(256));");
+	source varchar(256), destination varchar(256));");
 
 $dbh->do("create table Tracking(date date, pkgID integer,
 	timeToArrival varchar(15), currentLocation varchar(256));");

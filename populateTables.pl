@@ -179,6 +179,7 @@ for (0..200)
 	my $selectRandom = selectRandom("Customer","customerID");
 	my $hazmat = weightedAB(1,0,1,9);
 	my $randomAddress = randomAddress;
+	my $randomAddress0 = randomAddress;
 	my $weight = int(rand(1000));
 
 	my @shipping = ("express", "standard"); 
@@ -194,8 +195,8 @@ for (0..200)
 	#print "$shipping1\n";
 
 	$dbh->do("insert into Package(customerID, hazardous, weight, shipping,
-		destination) values ($selectRandom,$hazmat,$weight,\"$shipping1\",
-		\"$randomAddress\");");
+		source, destination) values ($selectRandom,$hazmat,$weight,\"$shipping1\",
+		\"$randomAddress0\",\"$randomAddress\");");
 }
 print("  Done\n");
 
