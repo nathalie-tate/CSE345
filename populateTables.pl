@@ -252,8 +252,8 @@ for $i(0..200)
 	$oversize = $oversize>0?"oversize":"";
 	$hazmat = $hazmat!=0?"hazmat":"";
 
-	my $due = $domesticShippingRate[$shiping] + $extraFees[$international] +
-		$extraFees[$oversize] + $extraFees[$hazmat];
+	my $due = $domesticShippingRate{$shipping} + $extraFees{$international} +
+		$extraFees{$oversize} + $extraFees{$hazmat};
 
 	my $paid = int(rand($due));
 	my $randAccountNumber = randAccountNumber;
