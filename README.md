@@ -11,11 +11,10 @@ server  (perl)
 perl
 
 CPAN Packages:
--DBI
 
--DBI::MySQL
-
--Math::Random
+-DBI 
+-DBI::MySQL 
+-Math::Random 
 
 mysql/mariadb
 
