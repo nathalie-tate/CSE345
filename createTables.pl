@@ -20,7 +20,8 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 $dbh->do("use $database;");
 
 $dbh->do("create table Customer(customerID integer auto_increment primary key, 
-	fName varchar(20), initial char, lName varchar(20), address varchar(256));");
+	fName varchar(20), initial char, lName varchar(20), address varchar(256),
+	password(varchar(256));");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
 	customerID integer, hazardous integer(1), weight integer,

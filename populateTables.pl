@@ -1,5 +1,8 @@
 #!/usr/bin/perl 
-# Nathalie Tate This code is freely available to be modified or distributed under the MIT License. See LICENSE.txt This file MUST be run after createTables.pl 
+# Nathalie Tate 
+# This code is freely available to be modified or distributed under the 
+# IT License. See LICENSE.txt 
+# This file MUST be run after createTables.pl 
 
 use DBI; 
 use Math::Random;
@@ -167,8 +170,8 @@ for (0..100)
 	my $lName = randomLastName;
 	my $address = randomAddress;
 
-	$dbh->do("insert into Customer(fName, initial, lName, address) 
-		values ('$fName','$mi','$lName',\"$address\");");
+	$dbh->do("insert into Customer(fName, initial, lName, address, password) 
+		values ('$fName','$mi','$lName',\"$address\",\"password\");");
 }
 print("  Done");
 

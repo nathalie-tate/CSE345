@@ -33,3 +33,8 @@ Only deliveries within the Continental US may be Overnight.
 
 Passwords are stored in plaintext. Because I don't have time to figure out how
 to hash them
+
+Customer view of application allows them to view all Invoices, Payments, and 
+shipments linked to their account.
+
+The default password is "password"
