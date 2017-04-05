@@ -1,12 +1,5 @@
 # CSE 345 Project
 
-## Todo:
-diagrams/design
-
-client  (java, javascript?)
-
-server  (perl)
-
 ## Dependencies:
 perl
 
@@ -26,7 +19,7 @@ You can run this once and forget about the rest of the scripts!
 This script will create the database. If the database already exists, it will 
 delete it first.
 
-MySQL server **MUST** be running.
+MySQL server **_MUST_** be running.
 
 # createTables.pl
 This script will create the tables in the database. createDB.pl **MUST** be run
@@ -38,3 +31,7 @@ be run first
 
 **_Important:_** This must be run _exactly_ once. Running this script multiple
 times will create database errors that will not be caught.
+
+# addConstraints.pl
+Creates foreign key constraints on the database. **Must** be run after 
+populateTables.pl
