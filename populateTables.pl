@@ -29,6 +29,7 @@ open STATES, 	 "<","data/states.csv"		 or die;
 @states = <STATES>;
 %domesticShippingRate = ("overnight" => 25, "express" => 15, "standard" => 5);
 %extraFees = ("" => 0, "hazmat" => 100, "oversize" => 25, "international" => 10);
+@couriers = ("plane","truck","warehouse","bicycle courier");
 
 close FIRSTNAME;
 close LASTNAME;
@@ -202,14 +203,16 @@ print("  Done\n");
 
 #populate attributes in Tracking
 print("  Tracking...\n");
-for (0..150)
+for $i(0..200)
 {
-	my $selectRandom = selectRandom("Package","pkgID");
 	my $timeToArrival = timeToArrival;
 	my $randomAddress = randomAddress;
+	my $courierID = $couriers[int(rand(@couriers))];
+	$courierID = "$courierID"." # ".int(rand(1000));
 
-	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, currentLocation)
-		values(now(),'$selectRandom', '$timeToArrival', '$randomAddress');");
+	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, courierID,
+		currentLocation)values(now(),'$i', '$timeToArrival','$courierID',
+		'$randomAddress');");
 }
 print("  Done\n");
 
@@ -228,7 +231,7 @@ for $i (0..200)
 		$dbh->do("update Package set customsID = $customsID where pkgID = $i;"); 
 	}
 }
-
+print("  Done\n"); 
 
 #populate Invoice
 print("  Invoice...\n");

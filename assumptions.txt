@@ -1,4 +1,4 @@
-Not all packages have tracking
+All packages have tracking
 
 Packages do not have tracking numbers; They are tracked by their package number
 
@@ -30,3 +30,6 @@ International, oversize, and hazardous deliveries have additional charges.
 Shipping may be Express, Standard, or Overnight.
 
 Only deliveries within the Continental US may be Overnight.
+
+Passwords are stored in plaintext. Because I don't have time to figure out how
+to hash them
