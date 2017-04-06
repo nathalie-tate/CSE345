@@ -1,2 +1,5 @@
 examples/
 *.log
+reportinfo.txt
+/UserApp/nbproject/private/
+/UserApp/*
