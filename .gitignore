@@ -1,5 +1,7 @@
 examples/
 *.log
-reportinfo.txt
 /UserApp/nbproject/private/
 /UserApp/*
+ERD.png
+report*
+.~lock*

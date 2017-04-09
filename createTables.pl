@@ -9,7 +9,7 @@ print("Creating Tables...\n");
 
 use DBI;
 
-$database='MooCow';
+$database='CSE345nrt';
 
 my $dbh = DBI->connect("dbi:mysql:", "root",""
 #debug
@@ -20,17 +20,19 @@ my $dbh = DBI->connect("dbi:mysql:", "root",""
 $dbh->do("use $database;");
 
 $dbh->do("create table Customer(customerID integer auto_increment primary key, 
-	fName varchar(20), initial char, lName varchar(20), address varchar(256),
-	password varchar(256));");
+	fName varchar(20), initial char, lName varchar(20), addrLine1 varchar(50), 
+	city varchar(50), state varchar(10), zip integer);");
 
 $dbh->do("create table Package(pkgID integer auto_increment primary key, 
 	customerID integer, hazardous integer(1), weight integer,
 	customsID integer, shipping enum('overnight','express','standard','free'),
-	source varchar(256), destination varchar(256));");
+	sourceAddr varchar(50), sourceCity varchar(50), sourceState char(2), 
+	sourceZip integer, destinationAddr varchar(50), destinationCity varchar(50),
+	destinationState char(2), destinationZip integer );"); 
 
-$dbh->do("create table Tracking(date date, pkgID integer,
-	timeToArrival varchar(15),courierID varchar(20),currentLocation 
-	varchar(256));");
+$dbh->do("create table Tracking(date date, pkgID integer,timeToArrival
+	varchar(15),courierID varchar(20),currentAddr varchar(50),currentCity
+	varchar(50), currentState char(2), currentZip integer);");
 
 $dbh->do("create table Invoice(pkgID integer, 
 	accountNum integer, customerID integer, amntDue float, payment float, date 

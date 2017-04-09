@@ -5,7 +5,7 @@
 
 use DBI;
 
-$database='MooCow';
+$database='CSE345nrt';
 
 my $dbh = DBI->connect("dbi:mysql:", "root",""
 	, {PrintError => 0,

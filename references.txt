@@ -1,0 +1,5 @@
+http://perldoc.perl.org/perlintro.html
+
+https://www.codeproject.com/articles/2826/performing-sql-operations-through-perl 
+
+https://www.w3schools.com/sql/default.asp 

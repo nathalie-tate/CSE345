@@ -6,7 +6,7 @@
 
 use DBI; 
 use Math::Random;
-$database='MooCow'; 
+$database='CSE345nrt'; 
 my $dbh = DBI->connect("dbi:mysql:", "root","" 
 	## debug 
 	#, {PrintError => 0, 
@@ -68,10 +68,7 @@ sub randomAddress
 	$zip = $zips[int(rand(@zips))];
 	$state = trim($states[int(rand(50))]);
 
-	my $tmp = "$num $street $streetSuffix / ";
-	$tmp = $tmp.trim("$city $citySuffix"); 
-	$tmp = $tmp.", $state $zip";
-	return $tmp; 
+	return ($num." ".$street." ".$streetSuffix,trim("$city $citySuffix"),$state,$zip);
 }
 sub randAccountNumber
 {
@@ -163,67 +160,70 @@ $dbh->do("use $database;");
 
 #populate non-fk attributes in Customer
 print("  Customer...\n");
-for (0..100)
+for (1..9000)
 {
 	my $fName = randomFirstName;
 	my $mi = trim(randomMI);
 	my $lName = randomLastName;
-	my $address = randomAddress;
+	(my $address,my $city,my $state,my $zip) = randomAddress;
 
-	$dbh->do("insert into Customer(fName, initial, lName, address, password) 
-		values ('$fName','$mi','$lName',\"$address\",\"password\");");
+	$dbh->do("insert into Customer(fName, initial, lName, addrLine1, city,
+		state, zip) 
+		values ('$fName','$mi','$lName','$address','$city','$state',$zip);");
 }
 print("  Done");
 
 #populate non-fk attributes in Package
 #and customerID
 print("\n  Package...\n");
-for (0..200)
+for (1..10000)
 {
 	my $selectRandom = selectRandom("Customer","customerID");
 	my $hazmat = weightedAB(1,0,1,9);
-	my $randomAddress = randomAddress;
-	my $randomAddress0 = randomAddress;
+
+	(my $sourceAddr,my $sourceCity,my $sourceState,my $sourceZip) = randomAddress;
+	(my $destAddr,my $destCity,my $destState,my $destZip) = randomAddress;
+
 	my $weight = int(rand(1000));
 
 	my @shipping = ("express", "standard"); 
 
-	#TODO this needs to be 1) fixe and 2) updated when issue #2/#3 are fixed
-	if($randomAddress =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY) \S+/)
+	if($randomAddress == ("AK"|"AZ"|"AR"|"CA"|"CO"|"CT"|"DE"|"FL"|"GA"|"ID"|"IL"|"IN"|"IA"|"KS"|"KY"|"LA"|"ME"|"MT"|"NE"|"NV"|"NH"|"NJ"|"NM"|"NY"|"NC"|"ND"|"OH"|"OK"|"OR"|"MD"|"MA"|"MI"|"MN"|"MS"|"MO"|"PA"|"RI"|"SC"|"SD"|"TN"|"TX"|"UT"|"VT"|"VA"|"WA"|"WV"|"WI"|"WY"))
 	{
 		my @shipping = ("overnight", "express", "standard");
 	}
 
 	my $shipping1 = $shipping[int(rand(@shipping))];
-	#DEBUG
-	#print "$shipping1\n";
 
 	$dbh->do("insert into Package(customerID, hazardous, weight, shipping,
-		source, destination) values ($selectRandom,$hazmat,$weight,\"$shipping1\",
-		\"$randomAddress0\",\"$randomAddress\");");
+		sourceAddr, sourceCity, sourceState, sourceZip,destinationAddr,
+		destinationCity, destinationState, destinationZip) 
+		values ('$selectRandom',$hazmat,$weight,'$shipping1',
+		'$sourceAddr','$sourceCity','$sourceState',$sourceZip,
+		'$destAddr','$destCity','$destState',$destZip);");
 }
 print("  Done\n");
 
 #populate attributes in Tracking
 print("  Tracking...\n");
-for $i(0..200)
+for $i(1..10000)
 {
 	my $timeToArrival = timeToArrival;
-	my $randomAddress = randomAddress;
+	(my $address,my $city,my $state,my $zip) = randomAddress;
 	my $courierID = $couriers[int(rand(@couriers))];
 	$courierID = "$courierID"." # ".int(rand(1000));
 
 	$dbh->do("insert into Tracking(date, pkgID, timeToArrival, courierID,
-		currentLocation)values(now(),'$i', '$timeToArrival','$courierID',
-		'$randomAddress');");
+		currentAddr, currentCity, currentState, currentZip)values(now(),'$i', 
+		'$timeToArrival','$courierID','$address','$city','$state','$zip');");
 }
 print("  Done\n");
 
 #populate CustomsManifest
 print("  CustomsManifest...\n");
-for $i (0..200)
+for $i (1..10000)
 {
-	if (!(selectWhere("Package","destination","pkgID",$i) =~ /^\S+\s\S+\s\S+ \/ \S+(\s\S+), (AK|AZ|AR|CA|CO|CT|DE|FL|GA|ID|IL|IN|IA|KS|KY|LA|ME|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|MD|MA|MI|MN|MS|MO|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|HI|AL) \S+/))
+	if (!(selectWhere("Package","destinationState","pkgID",$i) == ("AK"|"AZ"|"AR"|"CA"|"CO"|"CT"|"DE"|"FL"|"GA"|"ID"|"IL"|"IN"|"IA"|"KS"|"KY"|"LA"|"ME"|"MT"|"NE"|"NV"|"NH"|"NJ"|"NM"|"NY"|"NC"|"ND"|"OH"|"OK"|"OR"|"MD"|"MA"|"MI"|"MN"|"MS"|"MO"|"PA"|"RI"|"SC"|"SD"|"TN"|"TX"|"UT"|"VT"|"VA"|"WA"|"WV"|"WI"|"WY"|"HI"|"AL")))
 	{
 		my $contents = trim($nouns[int(rand(@nouns))]);
 		my $value = int(rand(100000));
@@ -238,7 +238,7 @@ print("  Done\n");
 
 #populate Invoice
 print("  Invoice...\n");
-for $i(0..200)
+for $i(1..10000)
 {
 	my $shipping = selectWhere('Package','shipping','pkgID',$i);
 	my $international = selectWhere('Package','customsID','pkgID',$i);
