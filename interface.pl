@@ -169,6 +169,7 @@ for $i(@pkgID)
 	print("Current Location: $location\n");
 	$eta = selectWhere("Tracking","timeToArrival","pkgID","$i");
 	print("Time to Arrival: $eta\n");
+	print("-------------------------------------------------------\n");
 
 }
 
