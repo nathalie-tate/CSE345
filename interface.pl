@@ -80,8 +80,8 @@ sub selectAllWhere
 print("Would you like to 1) use an existing database, or 2) import a database
 from a .sql file? 
 \nNote that importing from .sql files requires root access and a Unix-like
-system. For unprivileged accounts and Windows systems, use the provided
-database creation scripts and then choose to use an existing database.  
+system. For unprivileged accounts on Linux systems, see §2.2.1 in the README.
+For Windows systems, see §2.1.2 in the README.
 \nAlso note that after importing once, you should chose to select an existing
 database for subsequent queries.
 \n");
