@@ -5,12 +5,24 @@
 
 use DBI;
 
+sub trim 
+{
+	$s = shift; 
+	$s =~ s/^\s+|\s+$//g; 
+	return $s 
+};
+
 $database='CSE345nrt';
 
-my $dbh = DBI->connect("dbi:mysql:", "root",""
+print("Password for SQL user 'root':");
+$pw = <>;
+$pw = trim($pw);
+
+my $dbh = DBI->connect("dbi:mysql:", "root","$pw"
 	, {PrintError => 0,
 	RaiseError => 0}
 	);
+
 
 $dbh->do("drop database $database");
 

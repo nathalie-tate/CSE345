@@ -7,12 +7,14 @@
 use DBI; 
 my @globalistGlobalList;
 
-my $dbh = DBI->connect("dbi:mysql:", "root","" 
-	## debug 
-	#, {PrintError => 0, 
-	#RaiseError => 0}
-	); 
+print("Password for SQL user 'root':");
+$pw = <>;
+$pw = trim($pw);
 
+my $dbh = DBI->connect("dbi:mysql:", "root","$pw"
+	, {PrintError => 0,
+	RaiseError => 0}
+	);
 
 sub importDB
 {

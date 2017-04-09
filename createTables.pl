@@ -5,17 +5,25 @@
 #
 # createDB.pl MUST be run before this file.
 
+print("Password for SQL user 'root':");
+$pw = <>;
+$pw = trim($pw);
+
 print("Creating Tables...\n");
 
+sub trim 
+{
+	$s = shift; 
+	$s =~ s/^\s+|\s+$//g; 
+	return $s 
+};
 use DBI;
 
 $database='CSE345nrt';
-
-my $dbh = DBI->connect("dbi:mysql:", "root",""
-#debug
-#, {PrintError => 0,
-#RaiseError => 0}
-		);
+my $dbh = DBI->connect("dbi:mysql:", "root","$pw"
+	, {PrintError => 0,
+	RaiseError => 0}
+	);
 
 $dbh->do("use $database;");
 
