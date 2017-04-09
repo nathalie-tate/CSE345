@@ -13,8 +13,8 @@ $pw = <>;
 $pw = trim($pw);
 
 my $dbh = DBI->connect("dbi:mysql:", "root","$pw"
-	, {PrintError => 0,
-	RaiseError => 0}
+#	, {PrintError => 0,
+#RaiseError => 0}
 	);
 
 ### populate the tables 

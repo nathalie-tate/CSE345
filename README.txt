@@ -24,17 +24,24 @@ Instructions:
 		 correct command is `sudo systemctl start mariadb.service'. 
 
 	2) You must either generate or import the database. Generating the database
-		 takes a very long time, so importing is preferred. On Unix-like systems,
-		 run interface.pl (perl interface.pl) and follow the instructions for 
-		 importing. On Windows, you must generate the Database.
+		 takes a very long time, so importing is preferred. 
+		 
+		 2.1) IMPORTRING
 
-	3) GENERATING THE DATABASE
-	
-		3.1) LINUX: Execute runAll.sh `./runAll.sh'. This will create and populate
-				 the database and tables. Skip step to step ?
+		 		 2.1.1)	LINUX: skip to step 3 and follow the instructions for importing. 
+				 				This requires root access. If you do not have root access, skip
+								to step 2.2.1.
 
-		3.2) WINDOWS or LINUX: run the creation scripts manually. They MUST be run
-				 in the following order: createDB.pl, createTables.pl,
-				 populateTables.pl.  
-				
-	6) Run interface.pl to use the application.
+				 2.1.2) WINDOWS: you'll have to manually import the database. I do not
+				 				know how to do this in Windows, but I'm sure it's possible.
+
+		 2.2) GENERATING THE DATABASE
+
+				 2.2.1) LINUX: Execute runAll.sh. This will create and populate the
+							  database and tables.
+
+				 2.2.2) WINDOWS: The generation scripts do not work correctly on 
+				 				Windows. You will need to import the example database. See
+								Section 2.1.2.
+				 				
+	3) Run interface.pl to use the application.  
